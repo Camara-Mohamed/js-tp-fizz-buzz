@@ -1,4 +1,4 @@
-(function () {
+/*(function () {
     const fizzBuzz = {
         olElement: document.getElementById('fizzbuzz'),
         windowHeight: window.innerHeight,
@@ -13,9 +13,7 @@
             this.gap = this.end;
             document.documentElement.classList.add('js-enabled');
             this.generateItemElements();
-            window.addEventListener('scrollend', () => {
-                this.generateLiNumberElement();
-            });
+            window.addEventListener('scrollend', this.generateLiNumberElement.bind(this));
         },
         generateLiNumberElement() {
             const bodyHeight = document.body.clientHeight;
@@ -55,5 +53,57 @@
     };
 
     fizzBuzz.init();
-})()
+})()*/
 
+import {settings as s} from "./settings";
+
+const olElement = createOlElement();
+const windowHeight = window.innerHeight;
+
+function createOlElement() {
+    const olElement = document.createElement("ol");
+    olElement.classList.add(s.olClass);
+    olElement.setAttribute("id", s.olID);
+    document.body.appendChild(olElement);
+
+    return olElement;
+}
+
+function generateLiElement(olElement) {
+    for (; s.minValue <= s.maxValue; s.minValue++) {
+        if (s.minValue % 3 === 0 && s.minValue % 5 === 0) {
+            console.log(`FIZZBUZZ`);
+            olElement.insertAdjacentHTML("beforeend", `<li class="fizzbuzz">FI<i>zz</i>BU<i>zz</i></li>`)
+        } else if (s.minValue % 3 === 0) {
+            console.log(`FIZZ`);
+            olElement.insertAdjacentHTML("beforeend", `<li class="fizz">FI<i>zz</i></li>`);
+        } else if (s.minValue % 5 === 0) {
+            console.log(`BUZZ`);
+            olElement.insertAdjacentHTML("beforeend", `<li class="buzz">BU<i>zz</i></li>`);
+        } else {
+            console.log(`${s.minValue}`);
+            olElement.insertAdjacentHTML("beforeend", `<li>${s.minValue}</li>`);
+        }
+    }
+    let gap = s.maxValue;
+
+    s.maxValue += gap;
+}
+
+function generateLiMoreElement() {
+    const bodyHeight = document.body.clientHeight;
+    const scroll = window.scrollY;
+    console.log(bodyHeight, scroll, windowHeight);
+
+    if (scroll + windowHeight >= bodyHeight) {
+        generateLiElement(olElement);
+    }
+}
+
+addEventListener("scrollend", () => {
+    generateLiMoreElement();
+});
+
+generateLiElement(olElement);
+
+document.documentElement.classList.add("js-enabled");
